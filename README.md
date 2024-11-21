@@ -306,3 +306,52 @@ Pointer to pointer:
 	- Dòng "Không bao giờ đến đây." sẽ không bao giờ được in ra vì câu lệnh goto đã chuyển điều khiển ra ngoài đoạn mã đó
   ### SETJMP
   - setjmp.h là một thư viện trong ngôn ngữ lập trình C, cung cấp hai hàm chính là setjmp và longjmp. Cả hai hàm này thường được sử dụng để thực hiện xử lý ngoại lệ trong C, mặc dù nó không phải là một cách tiêu biểu để xử lý ngoại lệ trong ngôn ngữ này.
+- Cú pháp:
+  	```c
+
+	#include <setjmp.h>
+	
+	int setjmp(jmp_buf env);
+- Trong đó:
+	- jmp_buf env: Là một mảng hoặc cấu trúc được sử dụng để lưu trữ thông tin trạng thái của ngữ cảnh chương trình tại thời điểm gọi setjmp. Nó sẽ chứa thông tin cần thiết để chương trình có thể quay lại điểm gọi hàm setjmp.
+	- Hàm setjmp trả về giá trị 0 khi nó được gọi lần đầu tiên, và sẽ trả về giá trị khác (thường là một giá trị không bằng 0) khi chương trình quay lại từ hàm longjmp.
+- Mô tả:
+	- setjmp được sử dụng để lưu lại trạng thái của ngữ cảnh chương trình tại một điểm cụ thể (gọi là "checkpoint").
+	- longjmp sau đó có thể được sử dụng để quay lại điểm đó, thay vì tiếp tục chạy từ vị trí mà chương trình bị tạm dừng.
+- Cách hoạt động:
+	- Gọi setjmp: Khi setjmp được gọi, nó lưu lại trạng thái của chương trình (ví dụ, các thanh ghi, con trỏ, v.v.) trong biến env (được khai báo kiểu jmp_buf).
+	- Quay lại với longjmp: Khi gặp lỗi hoặc cần nhảy ra một điểm khác trong chương trình, bạn có thể gọi hàm longjmp(env, value) để quay lại điểm gọi setjmp, đồng thời trả về giá trị value từ hàm setjmp. Điều này làm cho chương trình "nhảy" về lại điểm đó.
+- Ví dụ về cách sử dụng setjmp và longjmp:
+	```c
+
+	#include <stdio.h>
+	#include <setjmp.h>
+	
+	jmp_buf env;
+
+	void func() {
+	    printf("Bắt đầu func.\n");
+	    longjmp(env, 1);  // Quay lại setjmp và trả về giá trị 1
+	    printf("Không bao giờ in dòng này.\n");
+	}
+	
+	int main() {
+	    if (setjmp(env) == 0) {
+	        // Đây là lần gọi đầu tiên của setjmp
+	        printf("Điều khiển đang ở trong main.\n");
+	        func();  // Gọi hàm func, sau đó longjmp sẽ quay lại đây
+	    } else {
+	        // Sau khi longjmp được gọi
+	        printf("Điều khiển quay lại từ longjmp.\n");
+	    }
+	
+	    return 0;
+	}
+- Giải thích ví dụ:
+	- Gọi setjmp(env) lần đầu tiên: Khi setjmp được gọi trong hàm main, chương trình lưu trạng thái ngữ cảnh vào biến env và trả về giá trị 0. Sau đó, chương trình tiếp tục bình thường và gọi hàm func().
+	- Gọi longjmp(env, 1) trong func: Trong hàm func, câu lệnh longjmp(env, 1) sẽ khiến chương trình quay lại điểm gọi setjmp trong hàm main. Lúc này, setjmp không trả về 0 nữa mà trả về giá trị 1, vì vậy đoạn mã trong else sẽ được thực thi.
+- Kết quả chương trình:
+	```css
+	Điều khiển đang ở trong main.
+	Bắt đầu func.
+	Điều khiển quay lại từ longjmp.
