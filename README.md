@@ -264,11 +264,45 @@ Pointer to pointer:
 	- Một điều kiện kiểm tra xem con trỏ có trỏ đến một đối tượng nào đó hay không.
 	- Nếu con trỏ bằng NULL, chương trình in ra "Pointer is NULL", ngược lại nếu con trỏ không bằng NULL, chương trình in ra "Pointer is not NULL".
 	- Sử dụng null pointer thường hữu ích để kiểm tra xem một con trỏ đã được khởi tạo và có trỏ đến một vùng nhớ hợp lệ chưa. Tránh dereferencing (sử dụng giá trị mà con trỏ trỏ đến) một null pointer là quan trọng để tránh lỗi chương trình.
+</details>
    
-<details><summary>LESSON 6: GOTO - SETJMP</summary>
+ <details><summary>LESSON 6: GOTO - SETJMP</summary>
+  <p>
+  
+ ## LESSON 6: GOTO - SETJMP
+ ### GOTO
+- goto là một từ khóa trong ngôn ngữ lập trình C, cho phép chương trình nhảy đến một câu lệch đã được đặt trước đó trong cùng một hàm. Mặc dù nó cung cấp khả năng kiểm soát flow của chương trình, nhưng việc sử dụng goto thường được xem là không tốt vì nó có thể làm cho mã nguồn trở nên khó đọc và khó bảo trì.
+- Cách sử dụng goto trong C/C++:
+	-Cú pháp:
 
-    <p>
-        
-## LESSON 6: GOTO - SETJMP
-## GOTO
-- goto là một từ khóa trong ngôn ngữ lập trình C, cho phép chương trình nhảy đến một nhãn (label) đã được đặt trước đó trong cùng một hàm. Mặc dù nó cung cấp khả năng kiểm soát flow của chương trình, nhưng việc sử dụng goto thường được xem là không tốt vì nó có thể làm cho mã nguồn trở nên khó đọc và khó bảo trì.
+	```c
+
+	goto label;
+- Trong đó: label là một nhãn (label) được định nghĩa trước trong chương trình, là tên của vị trí mà bạn muốn nhảy đến. Nhãn này phải kết thúc bằng dấu hai chấm (:).
+- Ví dụ:
+
+	```c
+
+	#include <stdio.h>
+	
+	int main() {
+	    int x = 10;
+	
+	    if (x == 10) {
+	        goto jump_here; // Nhảy đến nhãn jump_here nếu x == 10
+	    }
+	
+	    printf("Không bao giờ đến đây.\n"); // Dòng này sẽ bị bỏ qua vì goto đã nhảy qua
+	
+	jump_here:
+	    printf("Đã nhảy đến nhãn jump_here.\n");
+	
+	    return 0;
+	}
+ 
+- Giải thích ví dụ:
+	- Câu lệnh goto jump_here;: Chương trình sẽ nhảy đến vị trí có nhãn jump_here: ngay khi điều kiện if (x == 10) đúng.
+	- jump_here:: Đoạn mã sau nhãn này sẽ được thực thi khi chương trình nhảy tới đó.
+	- Dòng "Không bao giờ đến đây." sẽ không bao giờ được in ra vì câu lệnh goto đã chuyển điều khiển ra ngoài đoạn mã đó
+  ### SETJMP
+  - setjmp.h là một thư viện trong ngôn ngữ lập trình C, cung cấp hai hàm chính là setjmp và longjmp. Cả hai hàm này thường được sử dụng để thực hiện xử lý ngoại lệ trong C, mặc dù nó không phải là một cách tiêu biểu để xử lý ngoại lệ trong ngôn ngữ này.
