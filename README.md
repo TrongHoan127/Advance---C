@@ -3,7 +3,109 @@
     <p>
         
 ## LESSON 1: COMPILER - MARCO
+### Compiler
+- Trong ngôn ngữ lập trình, Compiler (trình phiên dịch) là chương trình có nhiệm vụ xử lý chương trình ngôn ngữ bậc cao thành ngôn ngữ bậc thấp hơn để máy tính thực thi.
+- Quá trình biên dịch gồm các giai đoạn như sau:
+![maxresdefault](https://github.com/user-attachments/assets/3fbcf4bf-b3b6-41e9-8d26-e33c72ee3287)
+#### Preprocessor (Tiền xử lý)
+- Bộ tiền xử lý có nhiệm vụ thực hiện: 
+    - Nhận mã nguồn, source code (gồm: c, .h, .cpp, .hpp,...)
+    - Xóa bỏ tất cả các chú thích, comments của chương trình
+    - Chỉ thị tiền xử lý ( bằng dấu #) cũng được xử lý
+    - Đầu ra là file i
+       ```c
+       gcc -E main.c -o main.i
+ #### Compiler 
+ - Chuyển từ ngôn ngữ bậc cao sang ngôn ngữ bậc thấp assembly. Đầu vào là file .i, đầu ra file .s.
+    ```c
+    gcc main.i -S -o main.s
+#### Assembler 
+- Chuyển sang mã máy (0,1). Đầu vào là file .s, đầu ra là file .o hay còn gọi là file object.
+  ```c
+    gcc - c main.s -o main.o
+#### Linker
+- Liên kết các file object.o lại thành một chương trình duy nhất.
+  ```c
+     gcc test1.o test2.o main.o -o main
+### Macro
+- Chỉ thị tiền xử lý là những chỉ thị cung cấp cho bộ tiền xử lý các thông tin trước khi quá trình phiên dịch bắt đầu. Các chỉ thị tiền xử lý bắt đầu bằng ký tự #
+   - #include (file header): Chèn nội dung của file vào vị trí mình chỉ định vào file i. Giúp chương trình dễ quản lí
+     ```c
+     #include <stdio.h>
+     #include "test1.h"
+   - #define: Được sử dụng để định nghĩa các hằng số hoặc các đoạn mã thay thế, không có kiểu dữ liệu. Việc sử dụng #define để định nghĩa được gọi là Macro, nơi nào có tên Macro sẽ được thay thế bằng nội dung của Macro đó
+    	- Ví dụ 1:
+	 ```c
+    	 #include <stdio.h>
+		#define PI 3.14 // Định nghĩa hằng số Pi sử dụng #define//
+		int main() {
+		double radius = 5.0; // Sử dụng hằng số Pi trong chương trình //
+		double area = PI * radius * radius;
+	
+		printf("Radius: %.2f\n", radius);
+		printf("Area of the circle: %.2f\n", area);
+	
+		return 0;
+		}
+   	- Ví dụ 2:
+   	  ```c
+   	  #include <stdio.h>
 
+		// Định nghĩa macro để tìm số lớn hơn giữa hai số
+		#define MAX(x, y) ((x) > (y) ? (x) : (y))
+		
+		int main() {
+		int a = 10, b = 20;
+		
+		// Sử dụng macro để tìm số lớn hơn giữa a và b
+		int maxNumber = MAX(a, b);
+		
+		printf("The bigger number between %d and %d is: %d\n", a, b, maxNumber);
+		
+		return 0;
+		}
+  - #undef: Để hủy định nghĩa một #define đã được định nghĩa trước đó.
+    ```c
+    #include <stdio.h>
+	#define MAX_SIZE 100
+	
+	int main() {
+	    printf("MAX_SIZE is defined as: %d\n", MAX_SIZE);
+	    
+	    // Bỏ định nghĩa của MAX_SIZE
+	    #undef MAX_SIZE
+	    
+	    // Định nghĩa lại MAX_SIZE với giá trị khác
+	    #define MAX_SIZE 50
+	    
+	    printf("MAX_SIZE is now redefined as: %d\n", MAX_SIZE);
+	
+	return 0;
+	}
+  - #if, #elif, #else: Kiểm tra điều kiện của Marco.
+  	- #if: Sử dụng để bắt đầu 1 điều kiện xử lý.Nếu đúng thì các dòng lệnh sau #if sẽ được biên dịch , sai sẽ bỏ qua đến khi gặp #endif.
+	- #elif: Để thêm 1 ĐK mới khi #if hoặc #elif sai.
+	- #else: Dùng khi không có ĐK nào đúng
+	- #ifdef: Dùng để kiểm tra 1 macro định nghĩa hay chưa.Nếu định nghĩa rồi thì mã sau ifdef sẽ được biên dịch.
+	- #ifndef: Dùng để kiểm tra 1 macro định nghĩa hay chưa.Nếu chưa định nghĩa thì mã sau #ifndef sẽ được biên dịch.Thường dùng để kiểm tra macro đó đã dc định nghĩa trong file nào chưa, kết thúc thì #endif
+    ```c
+    #include <stdio.h>
+	// Định nghĩa một macro
+	#define VERSION 3
+	
+	int main() {
+	    // Sử dụng #if, #elif, #else
+	    #if VERSION == 1                               // Điều kiện #if sai, nếu không còn kiểm tra điều kiện nào
+	                                                    // nữa đi tới #endif luôn
+	    printf("This is version 1.\n");
+	    #elif VERSION == 2                             // Tiếp tục kiểm tra với #elif
+	    printf("This is version 2.\n");            
+	    #else                                          // Không có điều kiện nào ở trên đúng
+	    printf("This is another version.\n");
+	    #endif
+	
+	return 0;
+	}
 </details>
 	
 <details><summary>LESSON 3: POINTER</summary>
