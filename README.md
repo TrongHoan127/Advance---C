@@ -34,7 +34,7 @@
      #include <stdio.h>
      #include "test1.h"
    - #define: Được sử dụng để định nghĩa các hằng số hoặc các đoạn mã thay thế, không có kiểu dữ liệu. Việc sử dụng #define để định nghĩa được gọi là Macro, nơi nào có tên Macro sẽ được thay thế bằng nội dung của Macro đó
-    	- Ví dụ 1:
+  - Ví dụ 1:
 	 ```c
     	 #include <stdio.h>
 		#define PI 3.14 // Định nghĩa hằng số Pi sử dụng #define//
@@ -47,7 +47,7 @@
 	
 		return 0;
 		}
-   	- Ví dụ 2:
+  - Ví dụ 2:
    	  ```c
    	  #include <stdio.h>
 
@@ -88,24 +88,112 @@
 	- #else: Dùng khi không có ĐK nào đúng
 	- #ifdef: Dùng để kiểm tra 1 macro định nghĩa hay chưa.Nếu định nghĩa rồi thì mã sau ifdef sẽ được biên dịch.
 	- #ifndef: Dùng để kiểm tra 1 macro định nghĩa hay chưa.Nếu chưa định nghĩa thì mã sau #ifndef sẽ được biên dịch.Thường dùng để kiểm tra macro đó đã dc định nghĩa trong file nào chưa, kết thúc thì #endif
-    ```c
-    #include <stdio.h>
-	// Định nghĩa một macro
-	#define VERSION 3
+   - Ví dụ 1:
+	    ```c
+	    #include <stdio.h>
+		// Định nghĩa một macro
+		#define VERSION 3
+		
+		int main() {
+		    // Sử dụng #if, #elif, #else
+		    #if VERSION == 1                               // Điều kiện #if sai, nếu không còn kiểm tra điều kiện nào
+		                                                    // nữa đi tới #endif luôn
+		    printf("This is version 1.\n");
+		    #elif VERSION == 2                             // Tiếp tục kiểm tra với #elif
+		    printf("This is version 2.\n");            
+		    #else                                          // Không có điều kiện nào ở trên đúng
+		    printf("This is another version.\n");
+		    #endif
+		
+		return 0;
+		}
+	- Ví dụ 2:
+  	 ```c
+		    #include <stdio.h>
+		// Định nghĩa một macro
+		#define FEATURE_ENABLED
+		
+		int main() {
+		    // Kiểm tra xem FEATURE_ENABLED đã được định nghĩa đúng không?
+		    #ifdef FEATURE_ENABLED
+		    printf("Feature is enabled.\n");
+		    #endif
+		    
+		    // Kiểm tra xem ANOTHER_FEATURE chưa được định nghĩa đúng không?
+		    #ifndef ANOTHER_FEATURE
+		    printf("Another feature is not enabled.\n");
+		    #endif
+		
+		return 0;
+		}
+#### Macro funtion 
+- Macro function là khi đoạn mã sử dụng #define với tham số truyền vào để hoạt động giống như một hàm.
+
+- Nếu macro function có nhiều dòng, mỗi dòng (trừ dòng cuối) phải kết thúc bằng ký tự \.
+  ```c
+	#include <stdio.h>
+	
+	#define DISPLAY_SUM(a,b)                        \
+	printf("This is macro to sum 2 number\n");      \
+	printf("Result is: %d", a+b);
 	
 	int main() {
-	    // Sử dụng #if, #elif, #else
-	    #if VERSION == 1                               // Điều kiện #if sai, nếu không còn kiểm tra điều kiện nào
-	                                                    // nữa đi tới #endif luôn
-	    printf("This is version 1.\n");
-	    #elif VERSION == 2                             // Tiếp tục kiểm tra với #elif
-	    printf("This is version 2.\n");            
-	    #else                                          // Không có điều kiện nào ở trên đúng
-	    printf("This is another version.\n");
-	    #endif
-	
+		DISPLAY_SUM(5,6);
 	return 0;
 	}
+- Ưu điểm của macro function so với function là tối ưu về tốc độ, nhưng không tối ưu về bộ nhớ.
+#### Toán tử trong Macro
+- Toán tử # (stringizing operator) chuyển đối số của macro thành chuỗi.
+- Toán tử ## (concatenation operator) nối các đối số lại với nhau thành một chuỗi hoặc tên mới.
+- Các toán tử này giúp tạo ra các macro linh hoạt và mạnh mẽ hơn, cho phép bạn thao tác với chuỗi và tên biến trong quá trình biên dịch.
+- ví dụ 1:
+  ```c
+	   #include <stdio.h>
+	
+	#define TO_STRING(x) #x
+	
+	int main() {
+	    int a = 5;
+	    printf("Giá trị của a là: %s\n", TO_STRING(a));  // Kết quả sẽ là "a"
+	    return 0;
+	}
+- ví dụ 2:
+  ```c
+	  #include <stdio.h>
+	
+	#define CONCAT(x, y) x ## y
+	
+	int main() {
+	    int xy = 10;
+	    printf("Giá trị của xy là: %d\n", CONCAT(x, y));  // Kết quả sẽ là 10
+	    return 0;
+	}
+  - Trong ví dụ trên, CONCAT(x, y) sẽ nối x và y lại với nhau thành xy. Kết quả là việc gọi CONCAT(x, y) sẽ được thay thế bằng xy, do đó giá trị của biến xy là 10.
+#### Variadic Marco
+- Variadic macro là một loại macro trong ngôn ngữ C (và C++) cho phép bạn định nghĩa macro nhận một số lượng đối số không xác định (hay còn gọi là đối số biến đổi). Điều này hữu ích khi bạn muốn tạo một macro có thể làm việc với nhiều đối số mà không cần phải xác định số lượng đối số cụ thể.
+- Giả sử bạn muốn định nghĩa một macro LOG có thể nhận một số lượng tham số không xác định để in ra một thông báo cùng với các tham số đó:
+	```c
+	#include <stdio.h>
+	
+	#define LOG(fmt, ...) printf(fmt, __VA_ARGS__)
+	
+	int main() {
+	    int a = 10;
+	    float b = 3.14;
+	    
+	    LOG("a = %d, b = %.2f\n", a, b);  // Gọi macro với 2 tham số
+	    LOG("Only one parameter: %d\n", a);  // Gọi macro với 1 tham số
+	
+	    return 0;
+	}
+- Giải thích:
+
+- LOG(fmt, ...) là variadic macro. fmt là tham số bắt buộc, còn ... đại diện cho các tham số còn lại (tùy chọn).
+- Trong thân macro, bạn sử dụng __VA_ARGS__ để đại diện cho các tham số bổ sung được truyền vào macro.
+- __VA_ARGS__ là một biến đặc biệt trong ngôn ngữ C giúp lấy tất cả các tham số được truyền vào macro.
+- Kết quả của chương trình trên sẽ là:
+	- a = 10, b = 3.14
+	- Only one parameter: 10
 </details>
 	
 <details><summary>LESSON 3: POINTER</summary>
