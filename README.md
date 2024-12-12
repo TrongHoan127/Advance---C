@@ -195,7 +195,115 @@
 	- a = 10, b = 3.14
 	- Only one parameter: 10
 </details>
+
+<details><summary>LESSON 2: STDARG- ASSERT</summary>
+    <p>	
+	    
+ ## LESSON 2: STDARG - ASSERT	
+ ### Thư viện STDARG
+ - Thư viện <stdarg.h> trong C cung cấp các cơ chế để làm việc với các tham số biến (variadic parameters) trong các hàm và macro. Đây là một thư viện rất hữu ích khi bạn muốn định nghĩa các hàm hoặc macro có thể nhận một số lượng tham số không cố định, chẳng hạn như các hàm printf hoặc scanf.
+ - Thư viện này cung cấp ba macro chính giúp bạn làm việc với các tham số biến:
+	- va_list: Đây là kiểu dữ liệu được sử dụng để giữ thông tin về các tham số biến. Bản chất là con trỏ kiểu char được định nghĩa lại tên bằng typedef: typedef char* va_list;
+	- va_start: Dùng để khởi tạo một đối tượng va_list và bắt đầu xử lý các tham số biến. Hàm này mang các kí tự vào chuỗi, tạo một con trỏ có giá trị bằng địa chỉ kí tự đầu tiên của chuỗi không xác định và thực hiện vòng lặp so sánh các kí tự trong chuỗi có giống với từng kí tự của label count không và con trỏ địa chỉ tăng dần dần ứng với địa chỉ của các kí tự tiếp theo của chuỗi. Sau khi xác định được kí tự giống với label count thì mới bắt đầu mang các kí tự sau dấu , vào chuỗi. 
+	- va_arg: Dùng để lấy giá trị của một tham số biến trong danh sách tham số và ép kiểu dữ liệu thành kiểu dữ liệu mong muốn
+	- va_end: Dùng để kết thúc việc truy cập các tham số biến và giải phóng tài nguyên.
+- Cú pháp của các macro trong <stdarg.h>:
+	- va_list:Được sử dụng để khai báo một biến sẽ chứa các tham số biến.
+		```c
+
+		va_list args;
+	- va_start: Dùng để bắt đầu truy xuất các tham số biến. va_start nhận hai đối số: Đối số đầu tiên là biến va_list bạn đã khai báo. Đối số thứ hai là tên của tham số cuối cùng trong danh sách tham số cố định (tham số trước danh sách tham số biến).
+		```c
+
+		va_start(args, last_fixed_param);
+	- va_arg:Dùng để truy xuất một tham số trong danh sách tham số biến. Bạn cần chỉ định kiểu dữ liệu của tham số bạn muốn truy xuất.
+		```c
+
+		type arg = va_arg(args, type); //type là kiểu dữ liệu của tham số bạn muốn lấy (ví dụ: int, double, char, ...).
+	- a_end: Dùng để kết thúc truy xuất các tham số biến và giải phóng tài nguyên. Đây là bước quan trọng để tránh rò rỉ tài nguyên.
+		```c
+
+		va_end(args);
+- Ví dụ về việc sử dụng <stdarg.h>:
+- Ví dụ: Viết một hàm sum nhận một số lượng tham số không xác định và tính tổng các tham số đó.
+	```c
+
+	#include <stdio.h>
+	#include <stdarg.h>
 	
+	// Hàm sum với các tham số biến
+	int sum(int num, ...) {
+	    int total = 0;
+	    
+	    // Khai báo va_list để truy cập các tham số biến
+	    va_list args;
+	    
+	    // Khởi tạo va_list, đối số thứ hai là tham số cuối cùng cố định (num)
+	    va_start(args, num);
+	    
+	    // Duyệt qua các tham số và tính tổng
+	    for (int i = 0; i < num; i++) {
+	        total += va_arg(args, int);  // Lấy giá trị của tham số kiểu int
+	    }
+	    
+	    // Kết thúc truy xuất tham số biến
+	    va_end(args);
+	    
+	    return total;
+	}
+	
+	int main() {
+	    int result = sum(4, 1, 2, 3, 4);  // Gọi sum với 4 tham số
+	    printf("Tổng là: %d\n", result);  // Kết quả sẽ là 10
+	    
+	    return 0;
+	}
+- Giải thích:
+
+	- Hàm sum nhận một tham số đầu vào num xác định số lượng tham số tiếp theo.
+	- Sau đó, hàm sử dụng va_start để khởi tạo danh sách tham số biến và va_arg để lấy từng giá trị từ danh sách tham số.
+	- Cuối cùng, va_end được gọi để kết thúc quá trình truy xuất tham số biến.
+
+### Thư viện ASSERT	
+- Thư viện assert.h là thư viện để hỗ trợ debug chương trình.
+
+- Hàm assert(): dùng để kiểm tra điều kiện, nếu đúng thì chương trình tiếp tục còn sai thì dừng lại ngay lập tức và báo lỗi.
+
+- Ví dụ báo lỗi chia cho 0:
+  ```c
+	#include <stdio.h>
+	#include <assert.h>
+	
+	double thuong(int a, int b) {
+	    assert( b != 0 && "Mẫu bằng 0");
+	    return (double) a/b;
+	}
+	
+	int main() {
+	    printf("Thuong: %f\n", thuong(6, 0)); 
+	    return 0;
+	}
+- Báo lỗi:
+	```c
+	> Assertion failed: b != 0 && "Mẫu bằng 0", file tempCodeRunnerFile.c, line 5
+- Thường thấy hơn sẽ sử dụng macro để định nghĩa một lỗi.
+	```c
+	#include <stdio.h>
+	#include <assert.h>
+	#define LOG(condition, cmd) assert(condition && #cmd)
+	
+	double thuong(int a, int b) {
+	    LOG(b != 0, "Mau bang bang 0");
+	}
+	
+	int main() {
+	    thuong(6,0);
+	    return 0;
+	}
+
+</details>
+
+
 <details><summary>LESSON 3: POINTER</summary>
     <p>
         
