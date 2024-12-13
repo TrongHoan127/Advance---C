@@ -571,10 +571,10 @@ Pointer to pointer:
 	- Sử dụng null pointer thường hữu ích để kiểm tra xem một con trỏ đã được khởi tạo và có trỏ đến một vùng nhớ hợp lệ chưa. Tránh dereferencing (sử dụng giá trị mà con trỏ trỏ đến) một null pointer là quan trọng để tránh lỗi chương trình.
 </details>
    
- <details><summary>LESSON 6: GOTO - SETJMP</summary>
+ <details><summary>LESSON 5: GOTO - SETJMP</summary>
   <p>
   
- ## LESSON 6: GOTO - SETJMP
+ ## LESSON 5: GOTO - SETJMP
  ### GOTO
 - goto là một từ khóa trong ngôn ngữ lập trình C, cho phép chương trình nhảy đến một câu lệch đã được đặt trước đó trong cùng một hàm. Mặc dù nó cung cấp khả năng kiểm soát flow của chương trình, nhưng việc sử dụng goto thường được xem là không tốt vì nó có thể làm cho mã nguồn trở nên khó đọc và khó bảo trì.
 - Cách sử dụng goto trong C/C++:
@@ -660,3 +660,64 @@ Pointer to pointer:
 	Điều khiển đang ở trong main.
 	Bắt đầu func.
 	Điều khiển quay lại từ longjmp.
+</details>
+   
+ <details><summary>LESSON 10: LINKED LIST </summary>
+  <p>
+  
+ ## LESSON 10: LINKED LIST
+ ### Khái niệm Linked list 
+ - Linked list là một cấu trúc dữ liệu trong lập trình máy tính, được sử dụng để tổ chức và lưu trữ dữ liệu. Một linked list bao gồm một chuỗi các "nút" (nodes) được lưu trữ không liền kề nhau trong bộ nhớ, mỗi nút chứa một giá trị dữ liệu và một con trỏ (pointer) đến nút tiếp theo trong chuỗi.
+- Khác với mảng (array), trong đó các phần tử được lưu trữ liên tiếp trong bộ nhớ, linked list cho phép linh hoạt hơn trong việc thêm và xóa phần tử mà không cần phải thay đổi kích thước hoặc di chuyển các phần tử khác.
+![image](https://github.com/user-attachments/assets/edcf0aa4-5c38-4d7b-8846-c8435ea056c6)
+### Các loại linked list
+- Có hai loại linked list chính:
+	- Singly Linked List (Danh sách liên kết đơn): Mỗi nút chỉ chứa một con trỏ đến nút tiếp theo trong chuỗi.
+	- Doubly Linked List (Danh sách liên kết đôi): Mỗi nút chứa hai con trỏ, một trỏ đến nút tiếp theo và một trỏ đến nút trước đó.
+### Tính chất
+- Danh sách liên kết có thể mở rộng và thu hẹp một cách linh hoạt.
+- Mặc định nodes sẽ chưa liên kết với nhau => phải liên kết các nodes thông qua con trỏ.
+- Phần tử cuối cùng trong Linked list sẽ trỏ vào NULL (con trỏ NULL), đánh dấu sự kết thúc của danh sách.
+- Linked list có thể thay đổi kích thước linh hoạt. Bạn có thể thêm hoặc xóa các node mà không cần phải thay đổi kích thước của danh sách hoặc di chuyển các phần tử khác, như trong mảng.
+- Để truy cập một phần tử bất kỳ trong linked list, bạn phải bắt đầu từ node đầu tiên và duyệt lần lượt qua các node tiếp theo cho đến khi tìm thấy phần tử cần tìm. Điều này làm cho việc truy cập các phần tử ngẫu nhiên (random access) kém hiệu quả hơn so với mảng.
+- Đây là kiểu cấu trúc dữ liệu kiểu cấp phát động có nghĩa là còn bộ nhớ thì còn cấp phát được, cấp phát đến khi nào hết bộ nhớ thì thôi - Vùng nhớ cấp phát : Heap.
+- Linked list chỉ sử dụng bộ nhớ cho các node đã được tạo ra. Điều này giúp tiết kiệm bộ nhớ khi số lượng phần tử thay đổi liên tục. Không lãng phí bộ nhớ nhưng cần thêm bộ nhớ để lưu phần con trỏ.
+- Thêm hoặc xóa node ở đầu hoặc giữa danh sách có thể thực hiện nhanh chóng (O(1)) nếu bạn đã có địa chỉ của node cần thay đổi. Tuy nhiên, nếu muốn xóa hoặc thêm ở cuối danh sách, bạn cần phải duyệt qua danh sách trước (O(n)).
+### Cấu trúc của 1 node
+- Trong C, ta thường dùng cấu trúc (struct) để định nghĩa một node. Cấu trúc này bao gồm:
+	- Dữ liệu (data): chứa giá trị hoặc thông tin của phần tử.
+	- Con trỏ (pointer): chứa địa chỉ của node tiếp theo trong danh sách.
+ 		```c
+		  typedef struct Node { // có Node ở dòng 1 để khi phiên dịch mã sẽ hiểu Node* next ở dòng 3, không báo lỗi
+		    int data;           // Giá trị (dữ liệu) của node
+		    struct Node* next;  // Con trỏ trỏ đến node tiếp theo
+		};
+  	- Node ở đây có phần dữ liệu là kiểu số nguyên, ngoài ra nó có 1 con trỏ next trỏ tới chính struct node (là địa chỉ của node tiếp theo trong linked list)
+### Các thao tác với linked list
+#### Khởi tạo Node 
+    ```c
+	#include <stdio.h>
+	#include <stdlib.h>
+	
+	struct Node {
+	    int data;     // Dữ liệu của node
+	    struct Node* next; // Con trỏ tới node tiếp theo
+	  };
+	
+	// Khởi tạo một node mới với dữ liệu là 10
+	struct Node* createNode(int data) {
+	    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); // khởi tạo địa chỉ cho Node
+	    newNode->data = data;
+	    newNode->next = NULL; // chưa liên kết Node với nhau thì phải Null trước
+	    return newNode; // trả về lại vị trí của newNode
+	    }
+	
+	int main() {
+	    struct Node* node1 = createNode(10);
+	    printf("Data of the new node: %d\n", node1->data);
+	    return 0;
+	    }
+#### Thêm một Node vào vị trí cuối cùng trong list
+![image](https://github.com/user-attachments/assets/bd1b4279-90f5-4346-985b-9762961f2952)
+	```c
+ 
