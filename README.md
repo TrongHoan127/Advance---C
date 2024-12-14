@@ -661,7 +661,30 @@ Pointer to pointer:
 	Bắt đầu func.
 	Điều khiển quay lại từ longjmp.
 </details>
-   
+
+   <details><summary>LESSON 7: STRUCT - UNION </summary>
+  <p>
+  
+ ## LESSON 7: STRUCT - UNION
+ ### STRUCT
+ #### Khái niệm
+ - struct là một cấu trúc dữ liệu cho phép lập trình viên tự định nghĩa một kiểu dữ liệu mới bằng cách nhóm các biến có các kiểu dữ liệu khác nhau lại với nhau. Các biến này có thể là các kiểu dữ liệu khác nhau (int, float, char, ...), và mỗi biến trong struct gọi là thành viên (member) hoặc trường (field).
+#### Tính năng
+- Gom nhóm các dữ liệu khác nhau: Bạn có thể sử dụng struct để gom các thành viên có kiểu dữ liệu khác nhau vào một đối tượng duy nhất.
+- Tăng tính tổ chức: Khi làm việc với các dữ liệu liên quan nhưng khác kiểu, struct giúp bạn giữ chúng trong một đơn vị duy nhất, dễ dàng quản lý và sử dụng.
+- Dễ dàng mở rộng: Bạn có thể thêm, sửa hoặc xóa các thành viên trong một struct mà không ảnh hưởng đến các phần khác của chương trình
+#### Cấu trúc cơ bản của struct
+	```c
+	struct StructName {
+	    data_type member1;
+	    data_type member2;
+	    data_type member3;
+	    // ...
+	};
+
+#### kích thước của struct
+
+ </details>
  <details><summary>LESSON 10: LINKED LIST </summary>
   <p>
   
@@ -719,5 +742,194 @@ Pointer to pointer:
 	    }
 #### Thêm một Node vào vị trí cuối cùng trong list
 ![image](https://github.com/user-attachments/assets/bd1b4279-90f5-4346-985b-9762961f2952)
+- quy trình thêm một node vào cuối danh sách là:
+	- Tạo node mới với dữ liệu bạn muốn thêm.
+	- Nếu danh sách rỗng, gán node mới làm head.
+	- Nếu danh sách không rỗng, duyệt qua danh sách đến node cuối cùng, sau đó gán con trỏ next của node cuối cùng trỏ đến node mới.
+    ```c
+	#include <stdio.h>
+	#include <stdlib.h>
+	
+	struct Node {
+	    int data;
+	    struct Node* next;
+	};
+	
+	// Hàm tạo node mới
+	struct Node* createNode(int data) {
+	    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+	    newNode->data = data;
+	    newNode->next = NULL;
+	    return newNode;
+	}
+	
+	// Hàm thêm node vào cuối danh sách
+	void append(struct Node** head, int data) {
+	    struct Node* newNode = createNode(data);
+	    
+	    // Nếu danh sách rỗng, gán node mới làm head
+	    if (*head == NULL) {
+	        *head = newNode;
+	        return;
+	    }
+	
+	    // Duyệt đến node cuối cùng
+	    struct Node* last = *head;
+	    while (last->next != NULL) {
+	        last = last->next;
+	    }
+	
+	    // Gán con trỏ next của node cuối cùng trỏ đến node mới
+	    last->next = newNode;
+	}
+	
+	// Hàm in danh sách liên kết
+	void printList(struct Node* head) {
+	    struct Node* temp = head;
+	    while (temp != NULL) {
+	        printf("%d -> ", temp->data);
+	        temp = temp->next;
+	    }
+	    printf("NULL\n");
+	}
+	
+	int main() {
+	    struct Node* head = NULL;
+	    
+	    append(&head, 10);
+	    append(&head, 20);
+	    append(&head, 30);
+	    
+	    printList(head);  // Output: 10 -> 20 -> 30 -> NULL
+	    return 0;}
+#### Chèn một node vào vị trí đầu tiên trong list
+- Tạo một node mới với dữ liệu bạn muốn chèn.
+- Gán con trỏ next của node mới trỏ đến head hiện tại (node đầu tiên của danh sách).
+- Cập nhật head để trỏ đến node mới
+  ```c
+	  // Hàm thêm một node vào đầu danh sách
+	void insertAtHead(struct Node** head, int data) {
+	    struct Node* newNode = createNode(data);  // Tạo node mới với dữ liệu
+	
+	    // Gán con trỏ next của node mới trỏ đến node đầu tiên (head) hiện tại
+	    newNode->next = *head;
+	    
+	    // Cập nhật head để trỏ đến node mới
+	    *head = newNode;
+	}
+	
+	// Hàm in danh sách liên kết
+	void printList(struct Node* head) {
+	    struct Node* temp = head;
+	    while (temp != NULL) {
+	        printf("%d -> ", temp->data);  // In dữ liệu của node
+	        temp = temp->next;             // Di chuyển đến node tiếp theo
+	    }
+	    printf("NULL\n");  // In kết thúc danh sách
+	}
+#### Chèn một node vào vị trí bất kì
+- Tạo một node mới với dữ liệu bạn muốn chèn.
+- Duyệt đến vị trí chèn: Bạn cần duyệt qua danh sách cho đến vị trí cần chèn. Vị trí này sẽ được chỉ định dưới dạng chỉ số (index).
+- Chỉnh sửa các con trỏ: Sau khi tìm thấy vị trí chèn, bạn sẽ thực hiện các bước sau:
+	- Gán con trỏ next của node mới trỏ tới node tại vị trí tiếp theo (nếu có).
+	- Gán con trỏ next của node trước vị trí chèn (node tại vị trí index-1) trỏ tới node mới.
+   ```c
+	   // Hàm thêm một node vào vị trí bất kỳ trong danh sách
+	void insertAtPosition(struct Node** head, int data, int position) {
+	    // Nếu vị trí không hợp lệ (vị trí nhỏ hơn 0)
+	    if (position < 0) {
+	        printf("Vị trí không hợp lệ.\n");
+	        return;
+	    }
+	
+	    // Tạo node mới với dữ liệu cần thêm
+	    struct Node* newNode = createNode(data);
+	
+	    // Nếu thêm ở đầu (vị trí 0)
+	    if (position == 0) {
+	        newNode->next = *head;  // Con trỏ next của node mới trỏ đến node đầu tiên
+	        *head = newNode;        // Cập nhật head trỏ đến node mới
+	        return;
+	    }
+	
+	    // Duyệt đến node trước vị trí cần chèn (node ở vị trí position - 1)
+	    struct Node* temp = *head;
+	    for (int i = 0; i < position - 1 && temp != NULL; i++) {
+	        temp = temp->next;
+	    }
+	
+	    // Nếu temp là NULL, vị trí quá lớn, không thể thêm
+	    if (temp == NULL) {
+	        printf("Vị trí vượt quá danh sách hiện tại.\n");
+	        free(newNode);
+	        return;
+	    }
+	
+	    // Gắn con trỏ next của node mới trỏ đến node tiếp theo của node hiện tại
+	    newNode->next = temp->next;
+	
+	    // Gắn con trỏ next của node hiện tại trỏ đến node mới
+	    temp->next = newNode;
+	}
+#### Xóa node đầu list
+ 	```c
+		// Hàm xóa node đầu tiên trong danh sách
+	void deleteAtHead(struct Node** head) {
+	    // Kiểm tra danh sách có rỗng không
+	    if (*head == NULL) {
+	        printf("Danh sách rỗng, không có node để xóa.\n");
+	        return;
+	    }
+	
+	    // Lưu trữ node đầu tiên
+	    struct Node* temp = *head;
+	
+	    // Cập nhật head để trỏ đến node tiếp theo
+	    *head = (*head)->next;
+	
+	    // Giải phóng bộ nhớ của node đầu tiên
+	    free(temp);
+	}
+#### xóa node cuối list
 	```c
+	// Hàm xóa node cuối cùng trong danh sách
+	void deleteAtEnd(struct Node** head) {
+	    // Kiểm tra danh sách có rỗng không
+	    if (*head == NULL) {
+	        printf("Danh sách rỗng, không có node để xóa.\n");
+	        return;
+	    }
+	
+	    // Nếu chỉ có một node duy nhất
+	    if ((*head)->next == NULL) {
+	        free(*head);  // Giải phóng bộ nhớ của node duy nhất
+	        *head = NULL; // Cập nhật head về NULL
+	        return;
+	    }
+	
+	    // Duyệt đến node trước node cuối cùng
+	    struct Node* temp = *head;
+	    while (temp->next != NULL && temp->next->next != NULL) {
+	        temp = temp->next;  // Di chuyển đến node trước node cuối cùng
+	    }
+	
+	    // Xóa node cuối cùng
+	    free(temp->next);  // Giải phóng bộ nhớ của node cuối cùng
+	    temp->next = NULL;  // Cập nhật con trỏ next của node trước node cuối cùng thành NULL
+#### Lấy kích thước của list
+	```c
+	// Hàm lấy kích thước của danh sách liên kết
+	int getSize(struct Node* head) {
+	    int size = 0;  // Khởi tạo biến đếm kích thước
+	    struct Node* temp = head;
+	    
+	    // Duyệt qua danh sách và đếm số node
+	    while (temp != NULL) {
+	        size++;
+	        temp = temp->next;  // Di chuyển đến node tiếp theo
+	    }
+	    
+	    return size;
+	}
+ 
  
