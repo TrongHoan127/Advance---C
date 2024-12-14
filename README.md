@@ -847,10 +847,6 @@ Pointer to pointer:
  ### So sánh giữa struct và union
 ![image](https://github.com/user-attachments/assets/7239cec4-2c31-4297-99da-2011137f776e)
 
-
-
-
-
  </details>
  <details><summary>LESSON 10: LINKED LIST </summary>
   <p>
@@ -1098,5 +1094,99 @@ Pointer to pointer:
 	    
 	    return size;
 	}
- 
- 
+  </details>
+ <details><summary>LESSON 12: BINARY SEARCH - FILE OPERATIONS - CODE STANDARDS </summary>
+  <p>
+  
+ ## LESSON 12: BINARY SEARCH - FILE OPERATIONS - CODE STANDARDS
+ ### BINARY SEARCH
+ - Binary Search (tìm kiếm nhị phân) là một thuật toán tìm kiếm hiệu quả trong một danh sách đã được sắp xếp (tăng dần hoặc giảm dần). Thuật toán này hoạt động bằng cách liên tục chia đôi danh sách và so sánh giá trị cần tìm với phần tử ở giữa, từ đó loại bỏ một nửa của danh sách và tiếp tục tìm kiếm trong nửa còn lại.
+#### Các bước mô tả thuật toán
+- Khởi tạo: Đặt hai chỉ số left và right lần lượt trỏ tới phần tử đầu và phần tử cuối của danh sách.
+- Tính giữa: Tính chỉ số của phần tử ở giữa danh sách bằng công thức: mid = (left + right) /2
+- So sánh:
+	- Nếu phần tử giữa bằng giá trị cần tìm, thuật toán kết thúc và trả về chỉ số của phần tử.
+	- Nếu phần tử giữa lớn hơn giá trị cần tìm, tìm kiếm sẽ tiếp tục ở nửa bên trái của danh sách, tức là điều chỉnh lại right = mid - 1.
+	- Nếu phần tử giữa nhỏ hơn giá trị cần tìm, tìm kiếm sẽ tiếp tục ở nửa bên phải của danh sách, tức là điều chỉnh lại left = mid + 1.
+- Lặp lại: Lặp lại bước 2 và 3 cho đến khi giá trị được tìm thấy hoặc không còn phần tử nào để kiểm tra (left > right).
+#### Đặc điểm:
+- Thời gian chạy: Thuật toán tìm kiếm nhị phân có thời gian chạy O(log n), rất nhanh khi so với tìm kiếm tuyến tính O(n), đặc biệt là với các danh sách có kích thước lớn.
+- Yêu cầu: Danh sách phải được sắp xếp (theo thứ tự tăng dần hoặc giảm dần).
+#### Ví dụ tìm kiếm nhị phân
+	```c
+	#include <stdio.h>
+	#include <stdlib.h>
+	
+	int binarySearch(int* arr, int l, int r, int x)
+	{
+	    if (r >= l)
+	    {
+	        int mid = (r + l) / 2;
+	
+	  
+	        if (arr[mid] == x)  return mid;
+	
+	   
+	        if (arr[mid] > x) return binarySearch(arr, l, mid - 1, x);
+	
+	  
+	        return binarySearch(arr, mid + 1, r, x);
+	    }
+	
+	
+	
+	
+	    return -1;
+	}
+	
+	void swap(int *a, int *b)
+	{
+	    int temp = *a; // 0x02 (10), 0x03 (20)
+	    *a = *b;
+	    *b = temp;
+	}
+	
+	void bubbleSort(int arr[], int n)
+	{
+	    int i, j;
+	    for (i = 0; i < n - 1; i++)
+	    {
+	       
+	        for (j = 0; j < n - i - 1; j++)
+	        {
+	           
+	            if (arr[j] > arr[j + 1])
+	                swap(&arr[j], &arr[j + 1]);
+	        }
+	    }
+	}
+	
+	int main()
+	{
+		int n, x, i;
+	    printf("Nhap so phan tu cua mang: ");
+	    scanf_s("%d", &n);
+	    int* arr = (int*)malloc(n * sizeof(int));
+	    printf("Nhap cac phan tu cua mang: ");
+	    for (i = 0; i < n; i++)
+	    {
+	        scanf_s("%d", &arr[i]);
+	    }
+	
+	    bubbleSort(arr, n);
+	    for (int i = 0; i < n; i++)
+	    {
+	        printf_s("i = %d\n", arr[i]);
+	    }
+	
+	    printf_s("Nhap gia tri can tim: ");
+	    scanf_s("%d", &x);
+	    int result = binarySearch(arr, 0, n - 1, x);
+	    if (result == -1)
+	        printf_s("Khong tim thay %d trong mang.\n", x);
+	    else
+	        printf_s("Tim thay %d tai vi tri %d trong mang.\n", x, result);
+	    free(arr);
+	    return 0;
+	}
+### FILE OPERATIONS
