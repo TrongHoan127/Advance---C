@@ -674,15 +674,182 @@ Pointer to pointer:
 - Tăng tính tổ chức: Khi làm việc với các dữ liệu liên quan nhưng khác kiểu, struct giúp bạn giữ chúng trong một đơn vị duy nhất, dễ dàng quản lý và sử dụng.
 - Dễ dàng mở rộng: Bạn có thể thêm, sửa hoặc xóa các thành viên trong một struct mà không ảnh hưởng đến các phần khác của chương trình
 #### Cấu trúc cơ bản của struct
-	```c
 	struct StructName {
 	    data_type member1;
 	    data_type member2;
 	    data_type member3;
 	    // ...
 	};
+  - ví dụ:
+    ```c
+	struct Point {
+	    int x;
+	    int y;
+	};
+#### Khởi tạo và truy cập thành viên
+ 	struct StructName p1 = {10,20};
+  - để truy cập thành viên, sử dụng toán tử (.);
+    ```c
+    	printf("X coordinate: %d\n", p1.x);
+#### Sử Dụng Tham Số Trong Hàm:
+- Bạn có thể truyền một biến thuộc kiểu struct như một tham số cho một hàm.
+ 	```c
+	void printPoint(struct Point p) {
+	    printf("(%d, %d)\n", p.x, p.y);
+	}
+#### Truyền Con Trỏ đến Struct:
+- Bạn có thể truyền con trỏ đến struct như một tham số cho một hàm, cho phép thay đổi giá trị của struct bên trong hàm.
+	 ```c
+	void updatePoint(struct Point* p, int newX, int newY) {
+	    p->x = newX;
+	    p->y = newY;
+	}
+#### Sử Dụng typedef để Tạo Bí Danh:
+- Bạn có thể sử dụng typedef để tạo bí danh cho struct, giúp rút ngắn cú pháp khi khai báo biến.
+	```c
+	typedef struct Point {
+	    int x;
+	    int y;
+	} Point;
+- Sau đó, bạn có thể khai báo biến như sau:
+	```c
+	Point p1 = {10, 20};
+
+
 
 #### kích thước của struct
+- Kích thước của một struct trong C phụ thuộc vào các thành phần bên trong nó và cách chúng được sắp xếp trong bộ nhớ.
+  ```c
+	  typedef struct {
+	    uint8_t c;    // Kiểu uint1_t = 1 byte = 8 bit
+	    uint16_t a;    // Kiểu uint16_t = 2 bytes, kích thước lớn nhất.
+	    uint32_t  b;    // Kiểu uint8_t = 4 bytes, kích thước lớn nhất
+	} examp1;
+- Kích thước các thành viên: Tổng kích thước các thành viên theo thứ tự khai báo.
+- Padding: Cộng thêm số byte padding cần thiết để đáp ứng yêu cầu alignment của hệ thống.
+- Kết quả: Kích thước của struct sẽ là kích thước tổng cộng của tất cả các thành viên cộng với padding, sao cho kích thước của struct là bội số của yêu cầu alignment cuối cùng.
+  ![image](https://github.com/user-attachments/assets/2bb17363-a533-4e93-b1d6-b5e63b3f49b2)
+  ```c
+  struct Example {
+    uint8_t a;    
+    uint32_t b;
+    uint16_t c;  
+  };
+![image](https://github.com/user-attachments/assets/3f64fb7f-48a3-4912-88f5-1183e11cb6b8)
+
+    ```c
+	struct Example1 {
+	    uint8_t arr1[5];
+	    uint16_t arr2_1;  
+	    uint16_t arr2_2; 
+	    uint16_t arr2_3; 
+	    uint16_t arr2_4;   
+            uint32_t arr3[2];
+	           };
+   
+![image](https://github.com/user-attachments/assets/e629f46d-0804-44d1-b9c2-27501d627192)
+### UNION
+- Trong ngôn ngữ lập trình C, union là một cấu trúc dữ liệu giúp lập trình viên kết hợp nhiều kiểu dữ liệu khác nhau vào một cùng một vùng nhớ. Mục đích chính của union là tiết kiệm bộ nhớ bằng cách chia sẻ cùng một vùng nhớ cho các thành viên của nó. Điều này có nghĩa là, trong một thời điểm, chỉ một thành viên của union có thể được sử dụng.
+- Kích thước của union sẽ bằng kích thước của thành viên lớn nhất.
+#### Khởi tạo
+- Cú pháp định nghĩa union trong C như sau:
+  	```c
+	union TenUnion {
+	    kieuDuLieu1 thanhVien1;
+	    kieuDuLieu2 thanhVien2;
+	    // ...
+	};
+- Ví dụ:
+  	 ```c
+	union Data {
+	    int i;
+	    float f;
+	    char str[20];
+		};
+	int main() {
+	    // Khai báo một biến kiểu union Data
+	    union Data data;
+	
+	    // Gán giá trị cho thành viên i
+	    data.i = 10;
+	    printf("data.i: %d\n", data.i);
+	
+	    // Gán giá trị cho thành viên f
+	    data.f = 220.5;
+	    printf("data.f: %.2f\n", data.f);
+	
+	    // Gán giá trị cho thành viên str
+	    snprintf(data.str, sizeof(data.str), "Hello, Union!");
+	    printf("data.str: %s\n", data.str);
+	
+	    return 0;
+	}
+- union Data có ba thành viên:
+	- i là một biến kiểu int.
+	- f là một biến kiểu float.
+	- str là một mảng ký tự (chuỗi) có độ dài 20.
+  	-  Khi gán giá trị cho data.i, sau đó gán giá trị cho data.f, và cuối cùng là gán giá trị cho data.str, ta thấy rằng chỉ có một giá trị duy nhất được lưu tại một thời điểm trong bộ nhớ của union.
+#### Địa chỉ các biến thành phần:
+	```c
+	Dia chi data:	00000097873FF9E4
+	Dia chi data.a: 00000097873FF9E4
+	Dia chi data.b: 00000097873FF9E4
+	Dia chi data.c: 00000097873FF9E4
+- Điều này có nghĩa là union chỉ có thể lưu trữ một giá trị cho một thành phần tại một thời điểm.
+#### Truy cập thành viên
+	```c
+	union Data data;
+	data.i = 10;
+	printf("Value of i: %d\n", data.i);
+#### Sử dụng trong các tình huống đặc biệt
+- union thường được sử dụng khi bạn có một biến có thể chứa một trong các kiểu dữ liệu khác nhau và bạn chỉ cần sử dụng một kiểu dữ liệu tại một thời điểm.
+	 ```c
+	union Value {
+	    int intValue;
+	    float floatValue;
+	    char stringValue[20];
+	 };
+#### Kích thước của UNION
+- Kích thước của union là kích thước của thành viên lớn nhất. Ví dụ, nếu trong union có một int (4 bytes) và một double (8 bytes), thì kích thước của union sẽ là 8 bytes (kích thước của double).
+### Ứng dụng kết hợp struct và union
+	
+	 #include <stdio.h>
+	#include <stdint.h>
+	#include <string.h>
+	
+	
+	typedef union {
+	    struct {
+	        uint8_t id[2];
+	        uint8_t data[4];
+	        uint8_t check_sum[2];
+	    } data;
+	
+	    uint8_t frame[8];
+	
+	} Data_Frame;
+	
+	
+	int main(int argc, char const *argv[])
+	{
+	    Data_Frame transmitter_data;
+	    
+	    strcpy(transmitter_data.data.id, "10");
+	    strcpy(transmitter_data.data.data, "1234");
+	    strcpy(transmitter_data.data.check_sum, "70");
+	
+			Data_Frame receiver_data;
+	    strcpy(receiver_data.frame, transmitter_data.frame);
+		
+	    
+	    return 0;
+	}
+ ### So sánh giữa struct và union
+![image](https://github.com/user-attachments/assets/7239cec4-2c31-4297-99da-2011137f776e)
+
+
+
+
 
  </details>
  <details><summary>LESSON 10: LINKED LIST </summary>
