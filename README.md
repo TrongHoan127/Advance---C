@@ -1190,3 +1190,82 @@ Pointer to pointer:
 	    return 0;
 	}
 ### FILE OPERATIONS
+- Ngôn ngữ lập trình C cung cấp một số thư viện và hàm tiêu biểu để thực hiện các thao tác với file. 
+- File CSV (Comma-Separated Values) là một loại file văn bản được sử dụng để lưu trữ và truyền tải dữ liệu có cấu trúc dưới dạng bảng, trong đó các dữ liệu của các cột được phân tách bằng dấu phẩy (,) hoặc một ký tự ngăn cách khác.
+#### Mở file
+- Để mở một file, bạn có thể sử dụng hàm fopen(). Hàm này trả về một con trỏ FILE, và cần được kiểm tra để đảm bảo file đã mở thành công.
+	```c
+	FILE *file = fopen(const char *file_name, const char *access_mode);
+	// filename: Tên tệp tin.
+	// mode: Chế độ mở tệp tin (ví dụ: "r", "w", "a", "r+", "w+", ...).
+#### Đọc file
+- Đọc từ tệp tin: Sau khi mở tệp tin, bạn có thể đọc dữ liệu từ tệp bằng các hàm như fgetc(), fgets(), hoặc fread().
+	- fgetc(FILE *stream): Đọc một ký tự từ tệp tin.
+	- fgets(char *str, int num, FILE *stream): Đọc một dòng từ tệp tin.
+	- fread(void *ptr, size_t size, size_t count, FILE *stream): Đọc dữ liệu vào bộ nhớ.
+#### Ghi file
+- Ghi vào tệp tin: Bạn có thể ghi dữ liệu vào tệp bằng các hàm như fputc(), fputs(), hoặc fwrite().
+
+	- fputc(int char, FILE *stream): Ghi một ký tự vào tệp.
+	- fputs(const char *str, FILE *stream): Ghi một chuỗi vào tệp.
+	- fwrite(const void *ptr, size_t size, size_t count, FILE *stream): Ghi dữ liệu vào tệp từ bộ nhớ.
+ #### Đóng file
+- Đóng tệp tin: Sau khi hoàn thành việc thao tác với tệp, bạn cần đóng tệp để giải phóng tài nguyên bằng cách sử dụng hàm fclose().
+
+	```c
+	int fclose(FILE *stream);
+#### Kiểm tra lỗi hoặc kết thúc tệp
+- feof(FILE *stream): Kiểm tra nếu con trỏ tệp đang ở cuối tệp.
+- ferror(FILE *stream): Kiểm tra nếu có lỗi xảy ra khi làm việc với tệp.
+#### Di chuyển con trỏ tệp:
+- fseek(FILE *stream, long offset, int whence): Di chuyển con trỏ tệp đến vị trí mới.
+- ftell(FILE *stream): Lấy vị trí hiện tại của con trỏ tệp.
+- rewind(FILE *stream): Đặt con trỏ tệp về vị trí đầu của tệp.
+  
+#### Ví dụ về thao tác với tệp tin trong C:
+	```c
+
+	#include <stdio.h>
+	
+	int main() {
+	    FILE *file;
+	    char str[100];
+	
+	    // Mở tệp để ghi
+	    file = fopen("example.txt", "w");
+	    if (file == NULL) {
+	        printf("Không thể mở tệp\n");
+	        return 1;
+	    }
+	
+	    // Ghi vào tệp
+	    fprintf(file, "Hello, World!\n");
+	    fclose(file);
+	
+	    // Mở tệp để đọc
+	    file = fopen("example.txt", "r");
+	    if (file == NULL) {
+	        printf("Không thể mở tệp\n");
+	        return 1;
+	    }
+	
+	    // Đọc dữ liệu từ tệp
+	    while (fgets(str, sizeof(str), file)) {
+	        printf("%s", str);
+	    }
+	
+	    fclose(file);
+	
+	    return 0;
+	}
+#### Các chế độ mở tệp tin:
+Tham số truyền vào access_mod là quyền sử dụng file:
+
+- r: Mở file với chế độ chỉ đọc file. Nếu mở file thành công thì trả về địa chỉ của phần tử đầu tiên trong file, nếu không thì trả về NULL.
+- rb: Mở file với chế độ chỉ đọc file theo định dạng binary. Nếu mở file thành công thì trả về địa chỉ của phần tử đầu tiên trong file, nếu không thì trả về NULL.
+- w: Mở file với chế độ ghi vào file. Nếu file đã tồn tại, thì sẽ ghi đè vào nội dung bên trong file. Nếu file chưa tồn tại thì sẽ tạo một file mới. Nếu không mở được file thì trả về NULL.
+- wb: Mở file với chế độ ghi vào file theo định dạng binary. Nếu file đã tồn tại, thì sẽ ghi đè vào nội dung bên trong file. Nếu file chưa tồn tại thì sẽ tạo một file mới. Nếu không mở được file thì trả về NULL.
+- a: Mở file với chế độ nối. Nếu mở file thành công thì trả về địa chỉ của phần tử cuối cùng trong file. Nếu file chưa tồn tại thì sẽ tạo một file mới. Nếu không mở được file thì trả về NULL.
+- ab: Mở file với chế độ nối dưới định dạng binary. Nếu mở file thành công thì trả về địa chỉ của phần tử cuối cùng trong file. Nếu file chưa tồn tại thì sẽ tạo một file mới. Nếu không mở được file thì trả về NULL.
+- r+: Mở file với chế độ đọc và ghi file. Nếu mở file thành công thì trả về địa chỉ của phần tử đầu tiên trong file, nếu không thì trả về NULL.
+- rb+: Mở file với chế độ đọc và ghi file dưới định dạng binary. Nếu mở file thành công thì trả về địa chỉ của phần tử đầu tiên trong file, nếu không thì trả về NULL.
